@@ -8,11 +8,14 @@ OBJS	= main.o kernel.o httpbootserver.o tftpbootserver.o
 
 LIBS	= $(CIRCLEHOME)/lib/usb/libusb.a \
 	  $(CIRCLEHOME)/lib/input/libinput.a \
-	  $(CIRCLEHOME)/lib/fs/fat/libfatfs.a \
 	  $(CIRCLEHOME)/lib/fs/libfs.a \
 	  $(CIRCLEHOME)/lib/net/libnet.a \
 	  $(CIRCLEHOME)/lib/sched/libsched.a \
-	  $(CIRCLEHOME)/lib/libcircle.a
+	  $(CIRCLEHOME)/lib/libcircle.a \
+		$(CIRCLEHOME)/addon/wlan/hostap/wpa_supplicant/libwpa_supplicant.a \
+		$(CIRCLEHOME)/addon/wlan/libwlan.a \
+		$(CIRCLEHOME)/addon/SDCard/libsdcard.a \
+		$(CIRCLEHOME)/addon/fatfs/libfatfs.a
 
 CONTENT	= index.h style.h favicon.h
 

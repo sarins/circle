@@ -25,102 +25,102 @@
 
 static const char FromBootServer[] = "tftpboot";
 
-CTFTPBootServer::CTFTPBootServer (CNetSubSystem *pNetSubSystem, size_t nMaxKernelSize)
-:	CTFTPDaemon (pNetSubSystem),
-	m_nMaxKernelSize (nMaxKernelSize),
-	m_bFileOpen (FALSE),
-	m_pKernelBuffer (0)
+CTFTPBootServer::CTFTPBootServer(CNetSubSystem *pNetSubSystem, size_t nMaxKernelSize)
+    : CTFTPDaemon(pNetSubSystem),
+      m_nMaxKernelSize(nMaxKernelSize),
+      m_bFileOpen(FALSE),
+      m_pKernelBuffer(0)
 {
 }
 
-CTFTPBootServer::~CTFTPBootServer (void)
+CTFTPBootServer::~CTFTPBootServer(void)
 {
-	assert (!m_bFileOpen);
+  assert(!m_bFileOpen);
 
-	delete [] m_pKernelBuffer;
-	m_pKernelBuffer = 0;
+  delete[] m_pKernelBuffer;
+  m_pKernelBuffer = 0;
 }
 
-boolean CTFTPBootServer::FileOpen (const char *pFileName)
+boolean CTFTPBootServer::FileOpen(const char *pFileName)
 {
-	return FALSE;
+  return FALSE;
 }
 
-boolean CTFTPBootServer::FileCreate (const char *pFileName)
+boolean CTFTPBootServer::FileCreate(const char *pFileName)
 {
-	if (m_bFileOpen)
-	{
-		return FALSE;
-	}
+  if (m_bFileOpen)
+  {
+    return FALSE;
+  }
 
-	assert (pFileName != 0);
+  assert(pFileName != 0);
 
-	static const char FileBaseName[] = "kernel";
-	if (strncmp (pFileName, FileBaseName, sizeof FileBaseName-1) != 0)
-	{
-		return FALSE;
-	}
+  static const char FileBaseName[] = "kernel";
+  if (strncmp(pFileName, FileBaseName, sizeof FileBaseName - 1) != 0)
+  {
+    return FALSE;
+  }
 
-	static const char FileExt[] = ".img";
-	size_t nLen = strlen (pFileName);
-	assert (nLen > sizeof FileExt);
-	if (strcmp (&pFileName[nLen - (sizeof FileExt-1)], FileExt) != 0)
-	{
-		return FALSE;
-	}
+  static const char FileExt[] = ".img";
+  size_t nLen = strlen(pFileName);
+  assert(nLen > sizeof FileExt);
+  if (strcmp(&pFileName[nLen - (sizeof FileExt - 1)], FileExt) != 0)
+  {
+    return FALSE;
+  }
 
-	CLogger::Get ()->Write (FromBootServer, LogDebug, "Receiving %s ...", pFileName);
+  CLogger::Get()->Write(FromBootServer, LogDebug, "Receiving %s ...", pFileName);
 
-	if (m_pKernelBuffer == 0)
-	{
-		m_pKernelBuffer = new u8[m_nMaxKernelSize];
-		if (m_pKernelBuffer == 0)
-		{
-			return FALSE;
-		}
-	}
+  if (m_pKernelBuffer == 0)
+  {
+    m_pKernelBuffer = new u8[m_nMaxKernelSize];
+    if (m_pKernelBuffer == 0)
+    {
+      return FALSE;
+    }
+  }
 
-	m_nCurrentOffset = 0;
-	m_bFileOpen = TRUE;
+  m_nCurrentOffset = 0;
+  m_bFileOpen = TRUE;
 
-	return TRUE;
+  return TRUE;
 }
 
-boolean CTFTPBootServer::FileClose (void)
+boolean CTFTPBootServer::FileClose(void)
 {
-	assert (m_bFileOpen);
+  assert(m_bFileOpen);
 
-	CLogger::Get ()->Write (FromBootServer, LogDebug, "%lu bytes received", m_nCurrentOffset);
+  CLogger::Get()->Write(FromBootServer, LogDebug, "%lu bytes received", m_nCurrentOffset);
 
-	m_bFileOpen = FALSE;
+  m_bFileOpen = FALSE;
 
-	if (m_nCurrentOffset > 0)
-	{
-		EnableChainBoot (m_pKernelBuffer, m_nCurrentOffset);
-	}
+  if (m_nCurrentOffset > 0)
+  {
+    EnableChainBoot(m_pKernelBuffer, m_nCurrentOffset);
+  }
 
-	return TRUE;
+  return TRUE;
 }
 
-int CTFTPBootServer::FileRead (void *pBuffer, unsigned nCount)
+int CTFTPBootServer::FileRead(void *pBuffer, unsigned nCount)
 {
-	return -1;
+  return -1;
 }
 
-int CTFTPBootServer::FileWrite (const void *pBuffer, unsigned nCount)
+int CTFTPBootServer::FileWrite(const void *pBuffer, unsigned nCount)
 {
-	assert (m_bFileOpen);
+  assert(m_bFileOpen);
 
-	if (m_nCurrentOffset + nCount > m_nMaxKernelSize)
-	{
-		m_bFileOpen = FALSE;
+  if (m_nCurrentOffset + nCount > m_nMaxKernelSize)
+  {
+    m_bFileOpen = FALSE;
 
-		return -1;
-	}
+    return -1;
+  }
 
-	assert (pBuffer != 0);
-	memcpy (m_pKernelBuffer + m_nCurrentOffset, pBuffer, nCount);
-	m_nCurrentOffset += nCount;
+  assert(pBuffer != 0);
+  memcpy(m_pKernelBuffer + m_nCurrentOffset, pBuffer, nCount);
+  m_nCurrentOffset += nCount;
 
-	return nCount;
+  return nCount;
 }

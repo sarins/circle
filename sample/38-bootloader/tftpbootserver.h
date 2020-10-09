@@ -27,21 +27,21 @@
 class CTFTPBootServer : public CTFTPDaemon
 {
 public:
-	CTFTPBootServer (CNetSubSystem *pNetSubSystem, size_t nMaxKernelSize);
-	~CTFTPBootServer (void);
+  CTFTPBootServer(CNetSubSystem *pNetSubSystem, size_t nMaxKernelSize);
+  ~CTFTPBootServer(void);
 
-	boolean FileOpen (const char *pFileName);
-	boolean FileCreate (const char *pFileName);
-	boolean FileClose (void);
-	int FileRead (void *pBuffer, unsigned nCount);
-	int FileWrite (const void *pBuffer, unsigned nCount);
+  boolean FileOpen(const char *pFileName);
+  boolean FileCreate(const char *pFileName);
+  boolean FileClose(void);
+  int FileRead(void *pBuffer, unsigned nCount);
+  int FileWrite(const void *pBuffer, unsigned nCount);
 
 private:
-	size_t m_nMaxKernelSize;
+  size_t m_nMaxKernelSize;
 
-	boolean m_bFileOpen;
-	u8 *m_pKernelBuffer;
-	unsigned m_nCurrentOffset;
+  boolean m_bFileOpen;
+  u8 *m_pKernelBuffer;
+  unsigned m_nCurrentOffset;
 };
 
 #endif

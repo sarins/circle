@@ -20,23 +20,23 @@
 #include "kernel.h"
 #include <circle/startup.h>
 
-int main (void)
+int main(void)
 {
-	CKernel Kernel;
-	if (!Kernel.Initialize ())
-	{
-		return EXIT_HALT;
-	}
-	
-	TShutdownMode ShutdownMode = Kernel.Run ();
+  CKernel Kernel;
+  if (!Kernel.Initialize())
+  {
+    return EXIT_HALT;
+  }
 
-	switch (ShutdownMode)
-	{
-	case ShutdownReboot:
-		return EXIT_REBOOT;
+  TShutdownMode ShutdownMode = Kernel.Run();
 
-	case ShutdownHalt:
-	default:
-		return EXIT_HALT;
-	}
+  switch (ShutdownMode)
+  {
+  case ShutdownReboot:
+    return EXIT_REBOOT;
+
+  case ShutdownHalt:
+  default:
+    return EXIT_HALT;
+  }
 }
